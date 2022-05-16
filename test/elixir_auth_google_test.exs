@@ -44,6 +44,13 @@ defmodule ElixirAuthGoogleTest do
     assert url =~ "http%3A%2F%2Flocalhost%3A4000"
   end
 
+  test "get Google login url (config redirect uri)" do
+    url = ElixirAuthGoogle.generate_oauth_url()
+
+    assert url =~ "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
+    assert url =~ "http%3A%2F%2Flocalhost%3A4001"
+  end
+
   test "get Google login url with state" do
     conn = %{
       host: "localhost",
@@ -81,6 +88,11 @@ defmodule ElixirAuthGoogleTest do
     }
 
     {:ok, res} = ElixirAuthGoogle.get_token("ok_code", conn)
+    assert res == %{access_token: "token1"}
+  end
+
+  test "get Google token (config redirect uri)" do
+    {:ok, res} = ElixirAuthGoogle.get_token("ok_code")
     assert res == %{access_token: "token1"}
   end
 
